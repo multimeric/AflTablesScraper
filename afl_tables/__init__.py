@@ -41,7 +41,7 @@ class Score:
     def score(self):
         return 6 * self.goals + self.behinds
 
-    def __repr__(self):
+    def __str__(self):
         return f'{self.goals}.{self.behinds}'
 
 
@@ -63,7 +63,7 @@ class TeamRound:
     def parse_match(cls, name: bs4.Tag, rounds: bs4.Tag):
         return cls(name=name.text, scores=[Score.parse(s) for s in rounds.text.split()], bye=False)
 
-    def __repr__(self):
+    def __str__(self):
         if self.bye:
             return f'{self.name} Bye'
         else:
@@ -97,7 +97,7 @@ class Match:
     def bye(self):
         return self.teams[0].bye
 
-    def __repr__(self):
+    def __str__(self):
         if self.bye:
             return f'{self.teams[0].name} vs Bye'
         else:
@@ -134,7 +134,7 @@ class Round:
         self.title = title
         self.matches = matches
 
-    def __repr__(self):
+    def __str__(self):
         return self.title
 
 
