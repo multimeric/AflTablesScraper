@@ -2,14 +2,22 @@ from urllib.parse import urljoin
 import requests
 import bs4
 import itertools
+import typing
 from bs4 import BeautifulSoup
 
 BASE_URL = 'https://afltables.com/afl/'
 
 
 def grouper(n, iterable, fillvalue=None):
+    """
+    Chunks an iterable into chunks of size n
+    """
     args = [iter(iterable)] * n
     return itertools.zip_longest(fillvalue=fillvalue, *args)
+
+
+class MatchException(Exception):
+    pass
 
 
 class Score:
@@ -22,7 +30,7 @@ class Score:
         self.behinds = behinds
 
     @classmethod
-    def parse(cls, pointstring:str):
+    def parse(cls, pointstring: str):
         """
         Parses a string in the form x.y
         """
@@ -33,53 +41,124 @@ class Score:
     def score(self):
         return 6 * self.goals + self.behinds
 
+    def __repr__(self):
+        return f'{self.goals}.{self.behinds}'
 
-class TeamScores:
-    def __init__(self, name: bs4.Tag, rounds: bs4.Tag):
-        self.name = name.text
-        self.scores = [Score.parse(s) for s in rounds.text.split()]
+
+class TeamRound:
+    """
+    Represents an individual team in an individual round
+    """
+
+    def __init__(self, name: str, scores: typing.Iterable[Score] = [], bye: bool = False):
+        self.name = name
+        self.scores = scores
+        self.bye = bye
+
+    @classmethod
+    def parse_bye(cls, name: bs4.Tag):
+        return cls(name=name.text, bye=True)
+
+    @classmethod
+    def parse_match(cls, name: bs4.Tag, rounds: bs4.Tag):
+        return cls(name=name.text, scores=[Score.parse(s) for s in rounds.text.split()], bye=False)
+
+    def __repr__(self):
+        if self.bye:
+            return f'{self.name} Bye'
+        else:
+            return f'{self.name} {self.scores[-1]}'
 
 
 class Match:
-    def __init__(self, table: bs4.Tag):
-        team_1, team_1_stats, team_1_score, misc, team_2, team_2_stats, team_2_score, winner = table.find_all('td')
-        self.teams = [TeamScores(team_1, team_1_stats), TeamScores(team_2, team_2_stats)]
+    """
+    Represents a single match of AFL, with either two teams or one team (a bye)
+    """
+
+    @classmethod
+    def parse(cls, table: bs4.Tag):
+        """
+        Parses a Match from the appropriate <table> element
+        """
+        td = table.find_all('td')
+
+        if len(td) == 8:
+            team_1, team_1_stats, team_1_score, misc, team_2, team_2_stats, team_2_score, winner = td
+            return cls([TeamRound.parse_match(team_1, team_1_stats), TeamRound.parse_match(team_2, team_2_stats)])
+        elif len(td) == 2:
+            return cls([TeamRound.parse_bye(td[0])])
+        else:
+            raise MatchException('This is invalid markup for a Match object')
+
+    def __init__(self, teams: typing.List[TeamRound]):
+        self.teams = teams
+
+    @property
+    def bye(self):
+        return self.teams[0].bye
+
+    def __repr__(self):
+        if self.bye:
+            return f'{self.teams[0].name} vs Bye'
+        else:
+            return f'{self.teams[0].name} vs {self.teams[1].name}'
 
 
 class Round:
-    def __init__(self, title: bs4.Tag, table: bs4.Tag):
-        self.title = title.text
-        self.matches = []
-        for match in table.select('td[width="85%"] table'):
-            self.matches.append(Match(match))
+    """
+    Represents a single round of AFL, with one or more matches being played in that round
+    """
+
+    @classmethod
+    def parse(cls, title: bs4.Tag, table: bs4.Tag) -> 'Round':
+        """
+        Parses a round from two table elements that define it
+        :param title: The <table> tag that contains this round's header
+        :param table: The <table> tag that contains this round's data
+        """
+        title = title.text
+
+        if 'Final' in title:
+            matches = [Match.parse(table)]
+        else:
+            matches = []
+            for match in table.select('td[width="85%"] table'):
+                try:
+                    matches.append(Match.parse(match))
+                except MatchException:
+                    continue
+
+        return cls(title=title, matches=matches)
+
+    def __init__(self, title: str, matches: list = []):
+        self.title = title
+        self.matches = matches
+
+    def __repr__(self):
+        return self.title
 
 
 class MatchScraper:
     def __init__(self, year: int):
         self.year = year
-        self.rounds = []
 
     @property
     def url(self):
         return urljoin(BASE_URL, f'seas/{self.year}.html')
 
-    def scrape(self):
+    def scrape(self) -> typing.List[Round]:
+        rounds = []
         html = requests.get(self.url).text
         soup = BeautifulSoup(html, 'html5lib')
 
-        tables = soup.select('center > table')
+        # Filter out irrelevant tables
+        tables = [table for table in soup.select('center > table') if
+                  table.get('class') != ['sortable'] and table.text != 'Finals']
+
+        # Group the tables into title, content pairs
         for header, body in grouper(2, tables):
             title = header.find('td')
 
-            # Break if we're past the rounds
-            if 'Round' not in title.text:
-                break
+            rounds.append(Round.parse(title, body))
 
-            self.rounds.append(Round(title, body))
-
-        return self.rounds
-
-
-m = MatchScraper(2015)
-m.scrape()
-print(m)
+        return rounds
