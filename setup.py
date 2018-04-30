@@ -6,7 +6,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'beautifulsoup4',
-        'requests'
+        'requests',
+        'html5lib'
     ],
     author='Michael Milton',
     author_email='michael.r.milton@gmail.com',

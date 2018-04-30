@@ -1,6 +1,8 @@
 # AFL Tables Scraper
 
 ## Installation
+Note that this module requires python 3.5 and above
+
 Install using:
 ```bash
 pip install git+https://github.com/TMiguelT/AflTablesScraper#egg=afl_tables
