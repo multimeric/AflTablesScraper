@@ -1,6 +1,8 @@
 AFL Tables Scraper
 ==================
 
+Full documentation available on `Github Pages <https://tmiguelt.github.io/AflTablesScraper>`_
+
 Installation
 ------------
 Note that this module requires python 3.5 and above
