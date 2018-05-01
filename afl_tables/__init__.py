@@ -23,7 +23,13 @@ class MatchException(Exception):
 class Score:
     """
     Represents an AFL score for a single team at a given point in time
+
+    :ivar goals: Number of goals scored
+    :ivar behinds: Number of behinds/points scored
     """
+
+    goals: int
+    behinds: int
 
     def __init__(self, goals, behinds):
         self.goals = goals
@@ -48,9 +54,17 @@ class Score:
 class TeamRound:
     """
     Represents an individual team in an individual round
+
+    :ivar name: The name of this team
+    :ivar scores: A list of Score objects indicating the score of this team at the end of each of the four quarters
+    :ivar bye: True if this round was a bye
     """
 
-    def __init__(self, name: str, scores: typing.Iterable[Score] = [], bye: bool = False):
+    bye: bool
+    name: str
+    scores: typing.List[Score]
+
+    def __init__(self, name: str, scores: typing.List[Score] = [], bye: bool = False):
         self.name = name
         self.scores = scores
         self.bye = bye
@@ -72,8 +86,12 @@ class TeamRound:
 
 class Match:
     """
-    Represents a single match of AFL, with either two teams or one team (a bye)
+    Represents a single match of AFL
+
+    :ivar teams: A list of teams, with either two teams or one team (a bye)
     """
+
+    teams: typing.List[TeamRound]
 
     @classmethod
     def parse(cls, table: bs4.Tag):
@@ -107,12 +125,23 @@ class Match:
 class Round:
     """
     Represents a single round of AFL, with one or more matches being played in that round
+
+    :ivar title: The human-readable title for this round
+    :ivar matches: A list of matches played during this round
     """
+
+    title: str
+    matches: typing.List[Match]
+
+    def __init__(self, title: str, matches: list = []):
+        self.title = title
+        self.matches = matches
 
     @classmethod
     def parse(cls, title: bs4.Tag, table: bs4.Tag) -> 'Round':
         """
         Parses a round from two table elements that define it
+
         :param title: The <table> tag that contains this round's header
         :param table: The <table> tag that contains this round's data
         """
@@ -130,25 +159,32 @@ class Round:
 
         return cls(title=title, matches=matches)
 
-    def __init__(self, title: str, matches: list = []):
-        self.title = title
-        self.matches = matches
-
     def __str__(self):
         return self.title
 
 
 class MatchScraper:
-    def __init__(self, year: int):
-        self.year = year
+    """
+    A static class that can be used to scrape the matches from the AFL Tables website
+    """
 
-    @property
-    def url(self):
-        return urljoin(BASE_URL, f'seas/{self.year}.html')
+    @staticmethod
+    def _url(year: int):
+        """
+        Returns the AFL Tables URL for the provided year
+        """
+        return urljoin(BASE_URL, f'seas/{year}.html')
 
-    def scrape(self) -> typing.List[Round]:
+    @classmethod
+    def scrape(cls, year: int) -> typing.List[Round]:
+        """
+        Scrapes all the match data for the given year
+
+        :param year: The year to scrape, e.g. 2015
+        """
+        url = cls._url(year)
         rounds = []
-        html = requests.get(self.url).text
+        html = requests.get(url).text
         soup = BeautifulSoup(html, 'html5lib')
 
         # Filter out irrelevant tables
