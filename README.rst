@@ -24,4 +24,4 @@ Currently the AFL Tables module can only scrape matches:
     rounds = MatchScraper.scrape(2015)
 
 
-See the docs on `Round <https://tmiguelt.github.io/AflTablesScraper#afl_tables.Round>`) for more information on how to use this object
+See the docs on `Round <https://tmiguelt.github.io/AflTablesScraper#afl_tables.Round>`_) for more information on how to use this object
