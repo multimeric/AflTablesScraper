@@ -1,12 +1,4 @@
-AFL Tables
-==========
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-.. include:: intro.rst
-
+.. include:: ../README.rst
 
 API Documentation
 =================
