@@ -40,9 +40,9 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<p>Currently the AFL Tables module can only scrape matches:</p>
+<div class="section" id="python-usage">
+<h2>Python Usage<a class="headerlink" href="#python-usage" title="Permalink to this headline">¶</a></h2>
+<p>The AFL Tables module can be used to scrape matches as follows:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">afl_tables</span> <span class="kn">import</span> <span class="n">MatchScraper</span>
 
 <span class="c1"># Make a scraper for a particular year (2015)</span>
@@ -50,6 +50,21 @@
 </pre></div>
 </div>
 <p>See the docs on <a class="reference external" href="https://tmiguelt.github.io/AflTablesScraper#afl_tables.Round">Round</a> for more information on how to use this object</p>
+</div>
+<div class="section" id="cli-usage">
+<h2>CLI Usage<a class="headerlink" href="#cli-usage" title="Permalink to this headline">¶</a></h2>
+<p>The AFL Tables module also creates a command-line script called <code class="docutils literal notranslate"><span class="pre">afltables</span></code>, which can be used to scrape data outside
+of a python script. Usage is as follows</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>usage: Scrapes the AFL Tables website and returns JSON data representing the matches
+   [-h] year
+
+positional arguments:
+  year        The year to scrape
+
+optional arguments:
+  -h, --help  show this help message and exit
+</pre></div>
+</div>
 </div>
 <div class="section" id="module-afl_tables">
 <span id="api-documentation"></span><h2>API Documentation<a class="headerlink" href="#module-afl_tables" title="Permalink to this headline">¶</a></h2>
@@ -111,13 +126,19 @@
 
 <dl class="class">
 <dt id="afl_tables.Match">
-<em class="property">class </em><code class="descclassname">afl_tables.</code><code class="descname">Match</code><span class="sig-paren">(</span><em>teams: List[afl_tables.TeamRound]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Match" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">afl_tables.</code><code class="descname">Match</code><span class="sig-paren">(</span><em>teams: List[afl_tables.TeamRound], attendees: int = None, date: &lt;module 'datetime' from '/usr/lib/python3.6/datetime.py'&gt; = None, venue: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a single match of AFL</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><strong>teams</strong> – A list of teams, with either two teams or one team (a bye)</td>
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>teams</strong> – A list of teams, with either two teams or one team (a bye)</li>
+<li><strong>attendees</strong> – Number of attendees at this match</li>
+<li><strong>date</strong> – The time and date that this match started</li>
+<li><strong>venue</strong> – The name of the venue at which this match was played</li>
+</ul>
+</td>
 </tr>
 </tbody>
 </table>
@@ -201,7 +222,8 @@ sphinx-build -b html docs /some/path
   <ul>
 <li><a class="reference internal" href="#">AFL Tables Scraper</a><ul>
 <li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#python-usage">Python Usage</a></li>
+<li><a class="reference internal" href="#cli-usage">CLI Usage</a></li>
 <li><a class="reference internal" href="#module-afl_tables">API Documentation</a></li>
 <li><a class="reference internal" href="#development">Development</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
