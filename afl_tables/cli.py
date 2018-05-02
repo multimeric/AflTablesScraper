@@ -11,7 +11,7 @@ def get_args():
     return parser.parse_args()
 
 
-def to_dict(obj):
+def to_json(obj):
     if isinstance(obj, datetime.datetime):
         return obj.replace(tzinfo=datetime.timezone.utc).timestamp()
     elif hasattr(obj, '__dict__'):
@@ -21,7 +21,7 @@ def to_dict(obj):
 def main():
     args = get_args()
     matches = afl_tables.MatchScraper.scrape(args.year)
-    json.dump(matches, sys.stdout, default=to_dict)
+    json.dump(matches, sys.stdout, default=to_json)
 
 
 if __name__ == '__main__':
