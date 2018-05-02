@@ -30,7 +30,7 @@ See the docs on `Round <https://tmiguelt.github.io/AflTablesScraper#afl_tables.R
 
 CLI Usage
 ---------
-The AFL Tables module also creates a command-line script called `afltables`, which can be used to scrape data outside
+The AFL Tables module also creates a command-line script called ``afltables``, which can be used to scrape data outside
 of a python script. Usage is as follows
 
 .. code-block:: none
