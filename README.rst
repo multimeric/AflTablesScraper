@@ -13,10 +13,10 @@ Install using:
 
     pip install git+https://github.com/TMiguelT/AflTablesScraper#egg=afl_tables
 
-Usage
------
+Python Usage
+------------
 
-Currently the AFL Tables module can only scrape matches:
+The AFL Tables module can be used to scrape matches as follows:
 
 .. code-block:: python
 
@@ -27,3 +27,20 @@ Currently the AFL Tables module can only scrape matches:
 
 
 See the docs on `Round <https://tmiguelt.github.io/AflTablesScraper#afl_tables.Round>`_ for more information on how to use this object
+
+CLI Usage
+---------
+The AFL Tables module also creates a command-line script called `afltables`, which can be used to scrape data outside
+of a python script. Usage is as follows
+
+.. code-block:: none
+
+    usage: Scrapes the AFL Tables website and returns JSON data representing the matches
+       [-h] year
+
+    positional arguments:
+      year        The year to scrape
+
+    optional arguments:
+      -h, --help  show this help message and exit
+

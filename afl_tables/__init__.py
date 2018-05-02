@@ -1,6 +1,7 @@
 from urllib.parse import urljoin
 import requests
 import bs4
+import datetime
 import itertools
 import typing
 from bs4 import BeautifulSoup
@@ -40,7 +41,7 @@ class Score:
         """
         Parses a string in the form x.y
         """
-        goals, behinds = pointstring.split('.')
+        goals, behinds = pointstring.replace('(', '').replace(')', '').split('.')
         return Score(int(goals), int(behinds))
 
     @property
@@ -89,9 +90,15 @@ class Match:
     Represents a single match of AFL
 
     :ivar teams: A list of teams, with either two teams or one team (a bye)
+    :ivar attendees: Number of attendees at this match
+    :ivar date: The time and date that this match started
+    :ivar venue: The name of the venue at which this match was played
     """
 
     teams: typing.List[TeamRound]
+    attendees: int
+    date: datetime.datetime
+    venue: str
 
     @classmethod
     def parse(cls, table: bs4.Tag):
@@ -102,14 +109,25 @@ class Match:
 
         if len(td) == 8:
             team_1, team_1_stats, team_1_score, misc, team_2, team_2_stats, team_2_score, winner = td
-            return cls([TeamRound.parse_match(team_1, team_1_stats), TeamRound.parse_match(team_2, team_2_stats)])
+            date, _, attendees, _, _, venue = misc
+            simple_date = ' '.join(str(date).split(' ')[:4])
+            parsed_date = datetime.datetime.strptime(simple_date, '%a %d-%b-%Y %I:%M %p')
+            return cls(
+                [TeamRound.parse_match(team_1, team_1_stats), TeamRound.parse_match(team_2, team_2_stats)],
+                date=parsed_date,
+                venue=venue.text,
+                attendees=int(str(attendees).replace(',', '').replace(' ', ''))
+            )
         elif len(td) == 2:
             return cls([TeamRound.parse_bye(td[0])])
         else:
             raise MatchException('This is invalid markup for a Match object')
 
-    def __init__(self, teams: typing.List[TeamRound]):
+    def __init__(self, teams: typing.List[TeamRound], attendees: int = None, date: datetime = None, venue: str = None):
         self.teams = teams
+        self.attendees = attendees
+        self.date = date
+        self.venue = venue
 
     @property
     def bye(self):
