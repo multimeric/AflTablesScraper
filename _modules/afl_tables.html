@@ -69,7 +69,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">behinds</span> <span class="o">=</span> <span class="n">behinds</span>
 
 <div class="viewcode-block" id="Score.parse"><a class="viewcode-back" href="../index.html#afl_tables.Score.parse">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pointstring</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pointstring</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s1">&#39;Score&#39;</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Parses a string in the form x.y</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -77,7 +77,10 @@
         <span class="k">return</span> <span class="n">Score</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">goals</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">behinds</span><span class="p">))</span></div>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The calculated score as a single integer</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="mi">6</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">goals</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">behinds</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
