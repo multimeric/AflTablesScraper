@@ -3,6 +3,10 @@ import afl_tables
 import json
 import datetime
 import sys
+from signal import signal, SIGPIPE, SIG_DFL
+
+# Allow piping into tools like head
+signal(SIGPIPE, SIG_DFL)
 
 
 def get_args():
@@ -14,6 +18,10 @@ def get_args():
 def to_json(obj):
     if isinstance(obj, datetime.datetime):
         return obj.replace(tzinfo=datetime.timezone.utc).timestamp()
+    elif isinstance(obj, afl_tables.TeamMatch):
+        dict = obj.__dict__
+        del dict['match']
+        return dict
     elif hasattr(obj, '__dict__'):
         return obj.__dict__
 

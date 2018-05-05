@@ -52,37 +52,49 @@ class Score:
         return f'{self.goals}.{self.behinds}'
 
 
-class TeamRound:
+class TeamMatch:
     """
-    Represents an individual team in an individual round
+    Represents an individual team in an individual match
 
     :ivar name: The name of this team
-    :ivar scores: A list of Score objects indicating the score of this team at the end of each of the four quarters
-    :ivar bye: True if this round was a bye
+    :ivar scores: A list of Score objects indicating the score of this team at the end of each of the four quarters.
+        There may be 5 values in the array, in the case of extra time. In all cases, the final value in this array is
+        the final score for this team
+    :ivar match: The Match that this round belongs to
     """
 
-    bye: bool
     name: str
     scores: typing.List[Score]
+    match: 'Match'
 
-    def __init__(self, name: str, scores: typing.List[Score] = [], bye: bool = False):
+    def __init__(self, name: str, match: 'Match', scores: typing.List[Score] = []):
         self.name = name
         self.scores = scores
-        self.bye = bye
+        self.match = match
+
+    @property
+    def final_score(self) -> typing.Optional[Score]:
+        """
+        Returns the final score of this team at the end of the match, or None, if this was a bye
+        """
+        if self.match.bye:
+            return None
+        else:
+            return self.scores[-1]
 
     @classmethod
-    def parse_bye(cls, name: bs4.Tag):
-        return cls(name=name.text, bye=True)
+    def parse_bye(cls, name: bs4.Tag, match: 'Match'):
+        return cls(name=name.text, match=match)
 
     @classmethod
-    def parse_match(cls, name: bs4.Tag, rounds: bs4.Tag):
-        return cls(name=name.text, scores=[Score.parse(s) for s in rounds.text.split()], bye=False)
+    def parse_match(cls, name: bs4.Tag, rounds: bs4.Tag, match: 'Match'):
+        return cls(name=name.text, scores=[Score.parse(s) for s in rounds.text.split()], match=match)
 
     def __str__(self):
-        if self.bye:
+        if self.match.bye:
             return f'{self.name} Bye'
         else:
-            return f'{self.name} {self.scores[-1]}'
+            return f'{self.name} {self.final_score}'
 
 
 class Match:
@@ -93,12 +105,14 @@ class Match:
     :ivar attendees: Number of attendees at this match
     :ivar date: The time and date that this match started
     :ivar venue: The name of the venue at which this match was played
+    :ivar winner: The name of the winning team
     """
 
-    teams: typing.List[TeamRound]
+    teams: typing.List[TeamMatch]
     attendees: int
     date: datetime.datetime
     venue: str
+    winner: str
 
     @classmethod
     def parse(cls, table: bs4.Tag):
@@ -112,26 +126,42 @@ class Match:
             date, _, attendees, _, _, venue = misc
             simple_date = ' '.join(str(date).split(' ')[:4])
             parsed_date = datetime.datetime.strptime(simple_date, '%a %d-%b-%Y %I:%M %p')
-            return cls(
-                [TeamRound.parse_match(team_1, team_1_stats), TeamRound.parse_match(team_2, team_2_stats)],
+
+            match = cls(
+                [],
                 date=parsed_date,
                 venue=venue.text,
-                attendees=int(str(attendees).replace(',', '').replace(' ', ''))
+                attendees=int(str(attendees).replace(',', '').replace(' ', '')),
+                bye=False,
+                winner=winner.b.text
             )
+
+            match.teams = [
+                TeamMatch.parse_match(team_1, team_1_stats, match),
+                TeamMatch.parse_match(team_2, team_2_stats, match)
+            ]
+
+            return match
         elif len(td) == 2:
-            return cls([TeamRound.parse_bye(td[0])])
+            match = cls([], bye=True, winner=td[0].text)
+            match.scores = [TeamMatch.parse_bye(td[0], match)]
+            return match
         else:
             raise MatchException('This is invalid markup for a Match object')
 
-    def __init__(self, teams: typing.List[TeamRound], attendees: int = None, date: datetime = None, venue: str = None):
+    def __init__(self,
+                 teams: typing.List[TeamMatch],
+                 winner: str,
+                 attendees: int = None,
+                 date: datetime = None,
+                 venue: str = None,
+                 bye: bool = False):
         self.teams = teams
         self.attendees = attendees
         self.date = date
         self.venue = venue
-
-    @property
-    def bye(self):
-        return self.teams[0].bye
+        self.bye = bye
+        self.winner = winner
 
     def __str__(self):
         if self.bye:
