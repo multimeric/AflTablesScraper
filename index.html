@@ -126,7 +126,7 @@ optional arguments:
 
 <dl class="class">
 <dt id="afl_tables.Match">
-<em class="property">class </em><code class="descclassname">afl_tables.</code><code class="descname">Match</code><span class="sig-paren">(</span><em>teams: List[afl_tables.TeamRound], attendees: int = None, date: &lt;module 'datetime' from '/usr/lib/python3.6/datetime.py'&gt; = None, venue: str = None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Match" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">afl_tables.</code><code class="descname">Match</code><span class="sig-paren">(</span><em>teams: List[afl_tables.TeamMatch], winner: str, attendees: int = None, date: &lt;module 'datetime' from '/usr/lib/python3.6/datetime.py'&gt; = None, venue: str = None, bye: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a single match of AFL</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -137,6 +137,7 @@ optional arguments:
 <li><strong>attendees</strong> – Number of attendees at this match</li>
 <li><strong>date</strong> – The time and date that this match started</li>
 <li><strong>venue</strong> – The name of the venue at which this match was played</li>
+<li><strong>winner</strong> – The name of the winning team</li>
 </ul>
 </td>
 </tr>
@@ -148,25 +149,6 @@ optional arguments:
 <dd><p>Parses a Match from the appropriate &lt;table&gt; element</p>
 </dd></dl>
 
-</dd></dl>
-
-<dl class="class">
-<dt id="afl_tables.TeamRound">
-<em class="property">class </em><code class="descclassname">afl_tables.</code><code class="descname">TeamRound</code><span class="sig-paren">(</span><em>name: str</em>, <em>scores: List[afl_tables.Score] = []</em>, <em>bye: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#TeamRound"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.TeamRound" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents an individual team in an individual round</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>name</strong> – The name of this team</li>
-<li><strong>scores</strong> – A list of Score objects indicating the score of this team at the end of each of the four quarters</li>
-<li><strong>bye</strong> – True if this round was a bye</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="class">

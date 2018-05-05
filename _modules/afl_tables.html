@@ -84,37 +84,49 @@
         <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.goals}</span><span class="s1">.</span><span class="si">{self.behinds}</span><span class="s1">&#39;</span></div>
 
 
-<div class="viewcode-block" id="TeamRound"><a class="viewcode-back" href="../index.html#afl_tables.TeamRound">[docs]</a><span class="k">class</span> <span class="nc">TeamRound</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">TeamMatch</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Represents an individual team in an individual round</span>
+<span class="sd">    Represents an individual team in an individual match</span>
 
 <span class="sd">    :ivar name: The name of this team</span>
-<span class="sd">    :ivar scores: A list of Score objects indicating the score of this team at the end of each of the four quarters</span>
-<span class="sd">    :ivar bye: True if this round was a bye</span>
+<span class="sd">    :ivar scores: A list of Score objects indicating the score of this team at the end of each of the four quarters.</span>
+<span class="sd">        There may be 5 values in the array, in the case of extra time. In all cases, the final value in this array is</span>
+<span class="sd">        the final score for this team</span>
+<span class="sd">    :ivar match: The Match that this round belongs to</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">bye</span><span class="p">:</span> <span class="nb">bool</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
     <span class="n">scores</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Score</span><span class="p">]</span>
+    <span class="n">match</span><span class="p">:</span> <span class="s1">&#39;Match&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">scores</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Score</span><span class="p">]</span> <span class="o">=</span> <span class="p">[],</span> <span class="n">bye</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="s1">&#39;Match&#39;</span><span class="p">,</span> <span class="n">scores</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">Score</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="n">scores</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bye</span> <span class="o">=</span> <span class="n">bye</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">match</span> <span class="o">=</span> <span class="n">match</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">final_score</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">typing</span><span class="o">.</span><span class="n">Optional</span><span class="p">[</span><span class="n">Score</span><span class="p">]:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the final score of this team at the end of the match, or None, if this was a bye</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">match</span><span class="o">.</span><span class="n">bye</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">scores</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">parse_bye</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">bs4</span><span class="o">.</span><span class="n">Tag</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">bye</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">parse_bye</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">bs4</span><span class="o">.</span><span class="n">Tag</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="s1">&#39;Match&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">parse_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">bs4</span><span class="o">.</span><span class="n">Tag</span><span class="p">,</span> <span class="n">rounds</span><span class="p">:</span> <span class="n">bs4</span><span class="o">.</span><span class="n">Tag</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">scores</span><span class="o">=</span><span class="p">[</span><span class="n">Score</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">rounds</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()],</span> <span class="n">bye</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">parse_match</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="n">bs4</span><span class="o">.</span><span class="n">Tag</span><span class="p">,</span> <span class="n">rounds</span><span class="p">:</span> <span class="n">bs4</span><span class="o">.</span><span class="n">Tag</span><span class="p">,</span> <span class="n">match</span><span class="p">:</span> <span class="s1">&#39;Match&#39;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">scores</span><span class="o">=</span><span class="p">[</span><span class="n">Score</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">rounds</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()],</span> <span class="n">match</span><span class="o">=</span><span class="n">match</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bye</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">match</span><span class="o">.</span><span class="n">bye</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.name}</span><span class="s1"> Bye&#39;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.name}</span><span class="s1"> </span><span class="si">{self.scores[-1]}</span><span class="s1">&#39;</span></div>
+            <span class="k">return</span> <span class="n">f</span><span class="s1">&#39;</span><span class="si">{self.name}</span><span class="s1"> </span><span class="si">{self.final_score}</span><span class="s1">&#39;</span>
 
 
 <div class="viewcode-block" id="Match"><a class="viewcode-back" href="../index.html#afl_tables.Match">[docs]</a><span class="k">class</span> <span class="nc">Match</span><span class="p">:</span>
@@ -125,12 +137,14 @@
 <span class="sd">    :ivar attendees: Number of attendees at this match</span>
 <span class="sd">    :ivar date: The time and date that this match started</span>
 <span class="sd">    :ivar venue: The name of the venue at which this match was played</span>
+<span class="sd">    :ivar winner: The name of the winning team</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">teams</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">TeamRound</span><span class="p">]</span>
+    <span class="n">teams</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">TeamMatch</span><span class="p">]</span>
     <span class="n">attendees</span><span class="p">:</span> <span class="nb">int</span>
     <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span>
     <span class="n">venue</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">winner</span><span class="p">:</span> <span class="nb">str</span>
 
 <div class="viewcode-block" id="Match.parse"><a class="viewcode-back" href="../index.html#afl_tables.Match.parse">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">parse</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">table</span><span class="p">:</span> <span class="n">bs4</span><span class="o">.</span><span class="n">Tag</span><span class="p">):</span>
@@ -144,26 +158,42 @@
             <span class="n">date</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">attendees</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">venue</span> <span class="o">=</span> <span class="n">misc</span>
             <span class="n">simple_date</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">date</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)[:</span><span class="mi">4</span><span class="p">])</span>
             <span class="n">parsed_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">simple_date</span><span class="p">,</span> <span class="s1">&#39;%a </span><span class="si">%d</span><span class="s1">-%b-%Y %I:%M %p&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span>
-                <span class="p">[</span><span class="n">TeamRound</span><span class="o">.</span><span class="n">parse_match</span><span class="p">(</span><span class="n">team_1</span><span class="p">,</span> <span class="n">team_1_stats</span><span class="p">),</span> <span class="n">TeamRound</span><span class="o">.</span><span class="n">parse_match</span><span class="p">(</span><span class="n">team_2</span><span class="p">,</span> <span class="n">team_2_stats</span><span class="p">)],</span>
+
+            <span class="n">match</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">(</span>
+                <span class="p">[],</span>
                 <span class="n">date</span><span class="o">=</span><span class="n">parsed_date</span><span class="p">,</span>
                 <span class="n">venue</span><span class="o">=</span><span class="n">venue</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
-                <span class="n">attendees</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">attendees</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+                <span class="n">attendees</span><span class="o">=</span><span class="nb">int</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">attendees</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;,&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)),</span>
+                <span class="n">bye</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+                <span class="n">winner</span><span class="o">=</span><span class="n">winner</span><span class="o">.</span><span class="n">b</span><span class="o">.</span><span class="n">text</span>
             <span class="p">)</span>
+
+            <span class="n">match</span><span class="o">.</span><span class="n">teams</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">TeamMatch</span><span class="o">.</span><span class="n">parse_match</span><span class="p">(</span><span class="n">team_1</span><span class="p">,</span> <span class="n">team_1_stats</span><span class="p">,</span> <span class="n">match</span><span class="p">),</span>
+                <span class="n">TeamMatch</span><span class="o">.</span><span class="n">parse_match</span><span class="p">(</span><span class="n">team_2</span><span class="p">,</span> <span class="n">team_2_stats</span><span class="p">,</span> <span class="n">match</span><span class="p">)</span>
+            <span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">match</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">td</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">TeamRound</span><span class="o">.</span><span class="n">parse_bye</span><span class="p">(</span><span class="n">td</span><span class="p">[</span><span class="mi">0</span><span class="p">])])</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="bp">cls</span><span class="p">([],</span> <span class="n">bye</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">winner</span><span class="o">=</span><span class="n">td</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+            <span class="n">match</span><span class="o">.</span><span class="n">scores</span> <span class="o">=</span> <span class="p">[</span><span class="n">TeamMatch</span><span class="o">.</span><span class="n">parse_bye</span><span class="p">(</span><span class="n">td</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">match</span><span class="p">)]</span>
+            <span class="k">return</span> <span class="n">match</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">MatchException</span><span class="p">(</span><span class="s1">&#39;This is invalid markup for a Match object&#39;</span><span class="p">)</span></div>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">teams</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">TeamRound</span><span class="p">],</span> <span class="n">attendees</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">venue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">teams</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="n">TeamMatch</span><span class="p">],</span>
+                 <span class="n">winner</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+                 <span class="n">attendees</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">date</span><span class="p">:</span> <span class="n">datetime</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">venue</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+                 <span class="n">bye</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">teams</span> <span class="o">=</span> <span class="n">teams</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">attendees</span> <span class="o">=</span> <span class="n">attendees</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">date</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">venue</span> <span class="o">=</span> <span class="n">venue</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">bye</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">teams</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">bye</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bye</span> <span class="o">=</span> <span class="n">bye</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">winner</span> <span class="o">=</span> <span class="n">winner</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">bye</span><span class="p">:</span>
