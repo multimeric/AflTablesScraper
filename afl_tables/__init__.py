@@ -37,7 +37,7 @@ class Score:
         self.behinds = behinds
 
     @classmethod
-    def parse(cls, pointstring: str):
+    def parse(cls, pointstring: str) -> 'Score':
         """
         Parses a string in the form x.y
         """
@@ -45,7 +45,10 @@ class Score:
         return Score(int(goals), int(behinds))
 
     @property
-    def score(self):
+    def score(self) -> int:
+        """
+        The calculated score as a single integer
+        """
         return 6 * self.goals + self.behinds
 
     def __str__(self):
