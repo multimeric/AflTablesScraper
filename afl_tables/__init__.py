@@ -147,7 +147,7 @@ class Match:
             return match
         elif len(td) == 2:
             match = cls([], bye=True, winner=td[0].text)
-            match.scores = [TeamMatch.parse_bye(td[0], match)]
+            match.teams = [TeamMatch.parse_bye(td[0], match)]
             return match
         else:
             raise MatchException('This is invalid markup for a Match object')
