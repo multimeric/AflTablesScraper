@@ -15,21 +15,31 @@ def get_args():
     return parser.parse_args()
 
 
-def to_json(obj):
+def to_serializable_dict(obj):
+    """
+    Converts any AFL Tables object into a simple data structure of dicts and lists, which can be directly converted to
+        json
+    """
     if isinstance(obj, datetime.datetime):
         return obj.replace(tzinfo=datetime.timezone.utc).timestamp()
+    elif isinstance(obj, (str, int, float)):
+        return obj
     elif isinstance(obj, afl_tables.TeamMatch):
-        dict = obj.__dict__
-        del dict['match']
-        return dict
+        d = obj.__dict__
+        del d['match']
+        return to_serializable_dict(d)
+    elif isinstance(obj, dict):
+        return {k: to_serializable_dict(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [to_serializable_dict(v) for v in obj]
     elif hasattr(obj, '__dict__'):
-        return obj.__dict__
+        return to_serializable_dict(obj.__dict__)
 
 
 def main():
     args = get_args()
     matches = afl_tables.MatchScraper.scrape(args.year)
-    json.dump(matches, sys.stdout, default=to_json)
+    json.dump(to_serializable_dict(matches), sys.stdout)
 
 
 if __name__ == '__main__':
