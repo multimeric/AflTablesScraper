@@ -7,7 +7,8 @@ setup(
     install_requires=[
         'beautifulsoup4',
         'requests',
-        'html5lib'
+        'html5lib',
+        'pytz'
     ],
     author='Michael Milton',
     author_email='michael.r.milton@gmail.com',

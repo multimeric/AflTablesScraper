@@ -5,8 +5,10 @@ import datetime
 import itertools
 import typing
 from bs4 import BeautifulSoup
+from pytz import timezone
 
 BASE_URL = 'https://afltables.com/afl/'
+AEST = timezone('Australia/Melbourne')
 
 
 def grouper(n, iterable, fillvalue=None):
@@ -127,8 +129,12 @@ class Match:
         if len(td) == 8:
             team_1, team_1_stats, team_1_score, misc, team_2, team_2_stats, team_2_score, winner = td
             date, _, attendees, _, _, venue = misc
-            simple_date = ' '.join(str(date).split(' ')[:4])
-            parsed_date = datetime.datetime.strptime(simple_date, '%a %d-%b-%Y %I:%M %p')
+
+            # Parse the date by taking the first two words (the date), and the last two words (the time in AEST)
+            # AFL Tables uses AEST as the second date: https://afltables.com/afl/notes.html
+            date_elements = str(date).replace('(', '').replace(')', '').split()
+            date_str = ' '.join(date_elements[0:2] + date_elements[-2:])
+            parsed_date = datetime.datetime.strptime(date_str, '%a %d-%b-%Y %I:%M %p').replace(tzinfo=AEST)
 
             match = cls(
                 [],
