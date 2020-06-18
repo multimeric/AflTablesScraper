@@ -117,6 +117,35 @@ class Match:
     venue: str
     winner: str
 
+    @staticmethod
+    def _parse_misc(misc: bs4.Tag) -> dict:
+        """
+        Parse the date/venue/attendees section
+        """
+        date = misc.contents[0]
+        simple_date = ' '.join(str(date).split(' ')[:4])
+        parsed_date = datetime.datetime.strptime(simple_date, '%a %d-%b-%Y %I:%M %p')
+
+        ret = {
+            'date': parsed_date
+        }
+
+        # The misc section has variable items, so we have to parse it dynamically
+        misc_attr = None
+        for element in misc.contents[1:]:
+            if 'Venue' in str(element):
+                misc_attr = 'venue'
+            elif 'Att' in str(element):
+                misc_attr = 'attendees'
+            elif len(str(element).strip()) > 0:
+                if misc_attr == 'venue':
+                    ret['venue'] = element.text
+                elif misc_attr == 'attendees':
+                    ret['attendees'] = int(str(element).replace(',', '').replace(' ', '')),
+                misc_attr = None
+
+        return ret
+
     @classmethod
     def parse(cls, table: bs4.Tag):
         """
@@ -126,17 +155,13 @@ class Match:
 
         if len(td) == 8:
             team_1, team_1_stats, team_1_score, misc, team_2, team_2_stats, team_2_score, winner = td
-            date, _, attendees, _, _, venue = misc
-            simple_date = ' '.join(str(date).split(' ')[:4])
-            parsed_date = datetime.datetime.strptime(simple_date, '%a %d-%b-%Y %I:%M %p')
+            misc_kwargs = cls._parse_misc(misc)
 
             match = cls(
                 [],
-                date=parsed_date,
-                venue=venue.text,
-                attendees=int(str(attendees).replace(',', '').replace(' ', '')),
                 bye=False,
-                winner=winner.b.text
+                winner=winner.b.text,
+                **misc_kwargs
             )
 
             match.teams = [

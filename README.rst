@@ -1,6 +1,10 @@
 AFL Tables Scraper
 ==================
 
+The AFL Tables Scraper is a Python package and command-line executable that downloads Australian Football League (AFL)
+match data from the fantastic database `AFL Tables <https://afltables.com/afl/afl_index.html>`_, and outputs it in
+a structured, machine-readable form.
+
 Full documentation available on `Github Pages <https://tmiguelt.github.io/AflTablesScraper>`_
 
 Installation
@@ -11,7 +15,7 @@ Install using:
 
 .. code-block:: bash
 
-    pip install git+https://github.com/TMiguelT/AflTablesScraper#egg=afl_tables
+    pip install afl_tables
 
 Python Usage
 ------------
@@ -44,3 +48,14 @@ of a python script. Usage is as follows
     optional arguments:
       -h, --help  show this help message and exit
 
+Changelog
+_________
+
+0.0.2
+~~~~~
+* Fix for missing fields in the attendees/date/venue part of the table, for example in 2020
+* Added some tests for the package
+
+0.0.1
+~~~~~
+* Initial release
