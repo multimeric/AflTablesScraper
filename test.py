@@ -1,4 +1,4 @@
-from afl_tables import MatchScraper
+from afl_tables import MatchScraper, AEST
 import pytest
 from datetime import datetime
 
@@ -21,7 +21,7 @@ def test_2019():
     assert round_1.title == 'Round 1'
 
     match_1 = round_1.matches[0]
-    assert match_1.date == datetime(year=2019, month=3, day=21, hour=19, minute=25)
+    assert match_1.date == datetime(year=2019, month=3, day=21, hour=18, minute=25, tzinfo=AEST)
     assert match_1.venue == 'M.C.G.'
     assert match_1.winner == 'Richmond'
 
@@ -42,7 +42,7 @@ def test_2020():
     assert round_1.title == 'Round 1'
 
     match_1 = round_1.matches[0]
-    assert match_1.date == datetime(year=2020, month=3, day=19, hour=19, minute=40)
+    assert match_1.date == datetime(year=2020, month=3, day=19, hour=18, minute=40, tzinfo=AEST)
     assert match_1.venue == 'M.C.G.'
     assert match_1.winner == 'Richmond'
 

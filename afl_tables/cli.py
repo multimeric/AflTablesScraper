@@ -15,31 +15,36 @@ def get_args():
     return parser.parse_args()
 
 
-def to_serializable_dict(obj):
+def to_serializable(obj):
     """
     Converts any AFL Tables object into a simple data structure of dicts and lists, which can be directly converted to
         json
     """
     if isinstance(obj, datetime.datetime):
-        return obj.replace(tzinfo=datetime.timezone.utc).timestamp()
+        if obj.tzinfo is None:
+            # If this datetime doesn't know what timezone it's in, convert it to UTC
+            return obj.replace(tzinfo=datetime.timezone.utc).timestamp()
+        else:
+            # If this datetime does know what timezone it's in, don't change anything
+            return obj.timestamp()
     elif isinstance(obj, (str, int, float)):
         return obj
     elif isinstance(obj, afl_tables.TeamMatch):
         d = obj.__dict__
         del d['match']
-        return to_serializable_dict(d)
+        return to_serializable(d)
     elif isinstance(obj, dict):
-        return {k: to_serializable_dict(v) for k, v in obj.items()}
+        return {k: to_serializable(v) for k, v in obj.items()}
     elif isinstance(obj, list):
-        return [to_serializable_dict(v) for v in obj]
+        return [to_serializable(v) for v in obj]
     elif hasattr(obj, '__dict__'):
-        return to_serializable_dict(obj.__dict__)
+        return to_serializable(obj.__dict__)
 
 
 def main():
     args = get_args()
     matches = afl_tables.MatchScraper.scrape(args.year)
-    json.dump(to_serializable_dict(matches), sys.stdout)
+    json.dump(to_serializable(matches), sys.stdout)
 
 
 if __name__ == '__main__':

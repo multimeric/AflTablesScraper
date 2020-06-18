@@ -5,8 +5,10 @@ import datetime
 import itertools
 import typing
 from bs4 import BeautifulSoup
+from pytz import timezone
 
 BASE_URL = 'https://afltables.com/afl/'
+AEST = timezone('Australia/Melbourne')
 
 
 def grouper(n, iterable, fillvalue=None):
@@ -123,8 +125,9 @@ class Match:
         Parse the date/venue/attendees section
         """
         date = misc.contents[0]
-        simple_date = ' '.join(str(date).split(' ')[:4])
-        parsed_date = datetime.datetime.strptime(simple_date, '%a %d-%b-%Y %I:%M %p')
+        date_elements = str(date).replace('(', '').replace(')', '').split()
+        date_str = ' '.join(date_elements[0:2] + date_elements[-2:])
+        parsed_date = datetime.datetime.strptime(date_str, '%a %d-%b-%Y %I:%M %p').replace(tzinfo=AEST)
 
         ret = {
             'date': parsed_date
