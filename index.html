@@ -1,18 +1,18 @@
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AFL Tables Scraper &#8212; afl_tables 0.0.1 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript" src="_static/documentation_options.js"></script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
    
@@ -27,16 +27,21 @@
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
+          
+
           <div class="body" role="main">
             
   <div class="section" id="afl-tables-scraper">
 <h1>AFL Tables Scraper<a class="headerlink" href="#afl-tables-scraper" title="Permalink to this headline">¶</a></h1>
+<p>The AFL Tables Scraper is a Python package and command-line executable that downloads Australian Football League (AFL)
+match data from the fantastic database <a class="reference external" href="https://afltables.com/afl/afl_index.html">AFL Tables</a>, and outputs it in
+a structured, machine-readable form.</p>
 <p>Full documentation available on <a class="reference external" href="https://tmiguelt.github.io/AflTablesScraper">Github Pages</a></p>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
 <p>Note that this module requires python 3.5 and above</p>
 <p>Install using:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install git+https://github.com/TMiguelT/AflTablesScraper#egg<span class="o">=</span>afl_tables
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install afl_tables
 </pre></div>
 </div>
 </div>
@@ -65,117 +70,114 @@ optional arguments:
   -h, --help  show this help message and exit
 </pre></div>
 </div>
+<div class="section" id="changelog">
+<h3>Changelog<a class="headerlink" href="#changelog" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="id1">
+<h4>0.0.2<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Fix for missing fields in the attendees/date/venue part of the table, for example in 2020</p></li>
+<li><p>Added some tests for the package</p></li>
+</ul>
+</div>
+<div class="section" id="id2">
+<h4>0.0.1<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h4>
+<ul class="simple">
+<li><p>Initial release</p></li>
+</ul>
+</div>
+</div>
 </div>
 <div class="section" id="module-afl_tables">
 <span id="api-documentation"></span><h2>API Documentation<a class="headerlink" href="#module-afl_tables" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="afl_tables.MatchScraper">
-<em class="property">class </em><code class="descclassname">afl_tables.</code><code class="descname">MatchScraper</code><a class="reference internal" href="_modules/afl_tables.html#MatchScraper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.MatchScraper" title="Permalink to this definition">¶</a></dt>
-<dd><p>A static class that can be used to scrape the matches from the AFL Tables website</p>
-<dl class="classmethod">
-<dt id="afl_tables.MatchScraper.scrape">
-<em class="property">classmethod </em><code class="descname">scrape</code><span class="sig-paren">(</span><em>year: int</em><span class="sig-paren">)</span> &#x2192; List[afl_tables.Round]<a class="reference internal" href="_modules/afl_tables.html#MatchScraper.scrape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.MatchScraper.scrape" title="Permalink to this definition">¶</a></dt>
-<dd><p>Scrapes all the match data for the given year</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>year</strong> – The year to scrape, e.g. 2015</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="afl_tables.Round">
-<em class="property">class </em><code class="descclassname">afl_tables.</code><code class="descname">Round</code><span class="sig-paren">(</span><em>title: str</em>, <em>matches: list = []</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Round"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Round" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents a single round of AFL, with one or more matches being played in that round</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>title</strong> – The human-readable title for this round</li>
-<li><strong>matches</strong> – A list of matches played during this round</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="classmethod">
-<dt id="afl_tables.Round.parse">
-<em class="property">classmethod </em><code class="descname">parse</code><span class="sig-paren">(</span><em>title: bs4.element.Tag</em>, <em>table: bs4.element.Tag</em><span class="sig-paren">)</span> &#x2192; afl_tables.Round<a class="reference internal" href="_modules/afl_tables.html#Round.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Round.parse" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses a round from two table elements that define it</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>title</strong> – The &lt;table&gt; tag that contains this round’s header</li>
-<li><strong>table</strong> – The &lt;table&gt; tag that contains this round’s data</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
+<dl class="py class">
 <dt id="afl_tables.Match">
-<em class="property">class </em><code class="descclassname">afl_tables.</code><code class="descname">Match</code><span class="sig-paren">(</span><em>teams: List[afl_tables.TeamMatch], winner: str, attendees: int = None, date: &lt;module 'datetime' from '/usr/lib/python3.6/datetime.py'&gt; = None, venue: str = None, bye: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Match" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">afl_tables.</code><code class="sig-name descname">Match</code><span class="sig-paren">(</span><em class="sig-param">teams: List[afl_tables.TeamMatch], winner: str, attendees: int = None, date: &lt;module 'datetime' from '/usr/lib/python3.7/datetime.py'&gt; = None, venue: str = None, bye: bool = False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Match"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Match" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represents a single match of AFL</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>teams</strong> – A list of teams, with either two teams or one team (a bye)</li>
-<li><strong>attendees</strong> – Number of attendees at this match</li>
-<li><strong>date</strong> – The time and date that this match started</li>
-<li><strong>venue</strong> – The name of the venue at which this match was played</li>
-<li><strong>winner</strong> – The name of the winning team</li>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>teams</strong> – A list of teams, with either two teams or one team (a bye)</p></li>
+<li><p><strong>attendees</strong> – Number of attendees at this match</p></li>
+<li><p><strong>date</strong> – The time and date that this match started</p></li>
+<li><p><strong>venue</strong> – The name of the venue at which this match was played</p></li>
+<li><p><strong>winner</strong> – The name of the winning team</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="classmethod">
+</dd>
+</dl>
+<dl class="py method">
 <dt id="afl_tables.Match.parse">
-<em class="property">classmethod </em><code class="descname">parse</code><span class="sig-paren">(</span><em>table: bs4.element.Tag</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Match.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Match.parse" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">table</span><span class="p">:</span> <span class="n">bs4.element.Tag</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Match.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Match.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses a Match from the appropriate &lt;table&gt; element</p>
 </dd></dl>
 
 </dd></dl>
 
-<dl class="class">
-<dt id="afl_tables.Score">
-<em class="property">class </em><code class="descclassname">afl_tables.</code><code class="descname">Score</code><span class="sig-paren">(</span><em>goals</em>, <em>behinds</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Score" title="Permalink to this definition">¶</a></dt>
-<dd><p>Represents an AFL score for a single team at a given point in time</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
-<li><strong>goals</strong> – Number of goals scored</li>
-<li><strong>behinds</strong> – Number of behinds/points scored</li>
+<dl class="py class">
+<dt id="afl_tables.MatchScraper">
+<em class="property">class </em><code class="sig-prename descclassname">afl_tables.</code><code class="sig-name descname">MatchScraper</code><a class="reference internal" href="_modules/afl_tables.html#MatchScraper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.MatchScraper" title="Permalink to this definition">¶</a></dt>
+<dd><p>A static class that can be used to scrape the matches from the AFL Tables website</p>
+<dl class="py method">
+<dt id="afl_tables.MatchScraper.scrape">
+<em class="property">classmethod </em><code class="sig-name descname">scrape</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">year</span><span class="p">:</span> <span class="n">int</span></em><span class="sig-paren">)</span> &#x2192; List<span class="p">[</span><a class="reference internal" href="#afl_tables.Round" title="afl_tables.Round">afl_tables.Round</a><span class="p">]</span><a class="reference internal" href="_modules/afl_tables.html#MatchScraper.scrape"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.MatchScraper.scrape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Scrapes all the match data for the given year</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>year</strong> – The year to scrape, e.g. 2015</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="afl_tables.Round">
+<em class="property">class </em><code class="sig-prename descclassname">afl_tables.</code><code class="sig-name descname">Round</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">str</span></em>, <em class="sig-param"><span class="n">matches</span><span class="p">:</span> <span class="n">list</span> <span class="o">=</span> <span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Round"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Round" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents a single round of AFL, with one or more matches being played in that round</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> – The human-readable title for this round</p></li>
+<li><p><strong>matches</strong> – A list of matches played during this round</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="classmethod">
+</dd>
+</dl>
+<dl class="py method">
+<dt id="afl_tables.Round.parse">
+<em class="property">classmethod </em><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">title</span><span class="p">:</span> <span class="n">bs4.element.Tag</span></em>, <em class="sig-param"><span class="n">table</span><span class="p">:</span> <span class="n">bs4.element.Tag</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#afl_tables.Round" title="afl_tables.Round">afl_tables.Round</a><a class="reference internal" href="_modules/afl_tables.html#Round.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Round.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses a round from two table elements that define it</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>title</strong> – The &lt;table&gt; tag that contains this round’s header</p></li>
+<li><p><strong>table</strong> – The &lt;table&gt; tag that contains this round’s data</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="afl_tables.Score">
+<em class="property">class </em><code class="sig-prename descclassname">afl_tables.</code><code class="sig-name descname">Score</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">goals</span></em>, <em class="sig-param"><span class="n">behinds</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/afl_tables.html#Score"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Score" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represents an AFL score for a single team at a given point in time</p>
+<dl class="field-list simple">
+<dt class="field-odd">Variables</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>goals</strong> – Number of goals scored</p></li>
+<li><p><strong>behinds</strong> – Number of behinds/points scored</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py method">
 <dt id="afl_tables.Score.parse">
-<em class="property">classmethod </em><code class="descname">parse</code><span class="sig-paren">(</span><em>pointstring: str</em><span class="sig-paren">)</span> &#x2192; afl_tables.Score<a class="reference internal" href="_modules/afl_tables.html#Score.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Score.parse" title="Permalink to this definition">¶</a></dt>
+<em class="property">classmethod </em><code class="sig-name descname">parse</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">pointstring</span><span class="p">:</span> <span class="n">str</span></em><span class="sig-paren">)</span> &#x2192; <a class="reference internal" href="#afl_tables.Score" title="afl_tables.Score">afl_tables.Score</a><a class="reference internal" href="_modules/afl_tables.html#Score.parse"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#afl_tables.Score.parse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses a string in the form x.y</p>
 </dd></dl>
 
-<dl class="attribute">
+<dl class="py method">
 <dt id="afl_tables.Score.score">
-<code class="descname">score</code><a class="headerlink" href="#afl_tables.Score.score" title="Permalink to this definition">¶</a></dt>
+<em class="property">property </em><code class="sig-name descname">score</code><a class="headerlink" href="#afl_tables.Score.score" title="Permalink to this definition">¶</a></dt>
 <dd><p>The calculated score as a single integer</p>
 </dd></dl>
 
@@ -193,31 +195,31 @@ sphinx-build -b html docs /some/path
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
 </ul>
 </div>
 </div>
 
 
           </div>
+          
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="#">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">AFL Tables Scraper</a><ul>
-<li><a class="reference internal" href="#installation">Installation</a></li>
-<li><a class="reference internal" href="#python-usage">Python Usage</a></li>
-<li><a class="reference internal" href="#cli-usage">CLI Usage</a></li>
-<li><a class="reference internal" href="#module-afl_tables">API Documentation</a></li>
-<li><a class="reference internal" href="#development">Development</a></li>
-<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
-</ul>
-</li>
-</ul>
+<h1 class="logo"><a href="#">afl_tables</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
 <div class="relations">
 <h3>Related Topics</h3>
 <ul>
@@ -225,25 +227,24 @@ sphinx-build -b html docs /some/path
   </ul></li>
 </ul>
 </div>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/index.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
         </div>
       </div>
       <div class="clearer"></div>
@@ -252,8 +253,8 @@ sphinx-build -b html docs /some/path
       &copy;2018, Michael Milton.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.1.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
       
       |
       <a href="_sources/index.rst.txt"
