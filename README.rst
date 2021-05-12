@@ -5,7 +5,7 @@ The AFL Tables Scraper is a Python package and command-line executable that down
 match data from the fantastic database `AFL Tables <https://afltables.com/afl/afl_index.html>`_, and outputs it in
 a structured, machine-readable form.
 
-Full documentation available on `Github Pages <https://tmiguelt.github.io/AflTablesScraper>`_
+Full documentation available on `Github Pages <https://multimeric.github.io/AflTablesScraper>`_
 
 Installation
 ------------
